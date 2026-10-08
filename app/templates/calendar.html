@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+  <div>
+    <h2 style="font-size: 1.4rem; font-weight: 800;">Calendar & Session Agenda</h2>
+    <p style="font-size: 0.85rem; color: var(--text-secondary);">
+      Structured chronological study sessions booked by the autonomous Scheduler Tool.
+    </p>
+  </div>
+  <a href="/planner" class="btn btn-secondary">Open Visual Planner</a>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">All Scheduled Blocks</div>
+    <span class="badge badge-low">Chronological Agenda</span>
+  </div>
+  <div id="calendarSessionsList" class="timeline-list">
+    <!-- Loaded via JS -->
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function loadCalendar() {
+  try {
+    const res = await fetch('/api/schedule');
+    const schedules = await res.json();
+    const container = document.getElementById('calendarSessionsList');
+    
+    if (schedules.length === 0) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+          No calendar blocks scheduled yet. Enter a goal on the Dashboard to auto-schedule study blocks!
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = schedules.map(s => `
+      <div class="session-slot" style="padding: 0.75rem 1rem;">
+        <div style="min-width: 140px;">
+          <span class="session-time">⏰ ${s.start_time} - ${s.end_time}</span>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">📅 ${s.date_str}</div>
+        </div>
+        <div style="flex: 1; padding: 0 1rem;">
+          <div style="font-weight: 700; font-size: 0.95rem;">${s.title}</div>
+          <div style="font-size: 0.78rem; color: var(--text-secondary);">${s.notes || ''}</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span class="badge badge-${(s.priority || 'medium').toLowerCase()}">${s.priority || 'MEDIUM'}</span>
+          <span class="badge badge-${s.status === 'COMPLETED' ? 'success' : s.status === 'MISSED' ? 'high' : 'pending'}">${s.status}</span>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) {
+    TaskPilot.showToast("Failed to load calendar", "error");
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => loadCalendar());
+</script>
+{% endblock %}

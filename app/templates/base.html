@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}TaskPilot AI | Autonomous Personal Productivity Agent{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%200%20100%20100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>">
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="brand">
+        <div class="brand-icon">TP</div>
+        <div>
+          <span class="brand-title">TaskPilot AI</span>
+          <span class="brand-subtitle">Autonomous Productivity Agent</span>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link {% if active_tab == 'dashboard' %}active{% endif %}"><span>⚡</span> Dashboard</a></li>
+          <li><a href="/tasks" class="nav-link {% if active_tab == 'tasks' %}active{% endif %}"><span>📋</span> Tasks</a></li>
+          <li><a href="/planner" class="nav-link {% if active_tab == 'planner' %}active{% endif %}"><span>📅</span> Planner</a></li>
+          <li><a href="/runs" class="nav-link {% if active_tab == 'runs' %}active{% endif %}"><span>🧠</span> Agent Runs</a></li>
+          <li><a href="/approvals" class="nav-link {% if active_tab == 'approvals' %}active{% endif %}"><span>🛡️</span> Approvals</a></li>
+          <li><a href="/calendar" class="nav-link {% if active_tab == 'calendar' %}active{% endif %}"><span>📆</span> Calendar</a></li>
+          <li><a href="/research" class="nav-link {% if active_tab == 'research' %}active{% endif %}"><span>🔍</span> Research</a></li>
+          <li><a href="/analytics" class="nav-link {% if active_tab == 'analytics' %}active{% endif %}"><span>📊</span> Analytics</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <button class="btn btn-demo btn-sm" onclick="DemoRunner.runFullWorkflow()" title="Run the full end-to-end hackathon demonstration">
+          <span>▶</span> Run Autonomous Demo
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="DemoRunner.resetAll()" title="Reset demo state">
+          <span>🔄</span> Reset
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Replan & Conflict Modal -->
+  <div class="modal-overlay" id="replanModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: #f59e0b; display: flex; align-items: center; gap: 0.5rem;">
+          <span>🔄</span> Autonomous Replanning Center
+        </h3>
+        <button class="modal-close" onclick="TaskPilot.closeModal('replanModal')">&times;</button>
+      </div>
+      <div id="replanModalBody">
+        <!-- Injected dynamically -->
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.25rem;">
+        <button class="btn btn-secondary" onclick="TaskPilot.closeModal('replanModal')">Dismiss</button>
+        <button class="btn btn-success" onclick="TaskPilot.applyReplanApproval()">
+          <span>✓</span> Approve & Apply New Schedule
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/demo.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

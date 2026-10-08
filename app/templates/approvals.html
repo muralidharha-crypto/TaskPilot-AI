@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem;">
+  <h2 style="font-size: 1.4rem; font-weight: 800;">Human-in-the-Loop Approval Center</h2>
+  <p style="font-size: 0.85rem; color: var(--text-secondary);">
+    Guaranteed human oversight: The agent is forbidden from executing state-modifying actions without explicit human authorization.
+  </p>
+</div>
+
+<div id="approvalsList">
+  <!-- Loaded via JS -->
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function loadApprovals() {
+  const container = document.getElementById('approvalsList');
+  try {
+    const res = await fetch('/api/agent/runs');
+    const runs = await res.json();
+    
+    // Find all runs with approvals
+    const approvalRuns = [];
+    for (const r of runs) {
+      const detail = await fetch(`/api/agent/runs/${r.id}`).then(res => res.json());
+      if (detail.approval) {
+        approvalRuns.push({ run: detail, approval: detail.approval });
+      }
+    }
+
+    if (approvalRuns.length === 0) {
+      container.innerHTML = `
+        <div class="card" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+          No pending or historical approvals. Enter a goal on the Dashboard to trigger an autonomous action plan!
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = approvalRuns.map(item => `
+      <div class="card" style="margin-bottom: 1.25rem; border-color: ${item.approval.status === 'PENDING' ? 'var(--warning)' : 'var(--border)'};">
+        <div class="card-header">
+          <div>
+            <h3 style="font-size: 1.05rem; font-weight: 700;">Action Plan for Run #${item.run.id}</h3>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);">Goal: "${item.run.goal}"</div>
+          </div>
+          <span class="badge badge-${item.approval.status === 'APPROVED' ? 'success' : item.approval.status === 'PENDING' ? 'medium' : 'high'}">
+            ${item.approval.status}
+          </span>
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+          <table class="action-audit-table">
+            <thead>
+              <tr>
+                <th>Tool</th>
+                <th>Action</th>
+                <th>Target Parameters</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${(item.approval.proposed_actions || []).map(act => `
+                <tr>
+                  <td><code>${act.tool_name}.${act.function_name}</code></td>
+                  <td>${act.description}</td>
+                  <td style="font-size: 0.75rem; color: var(--text-muted);"><code>${JSON.stringify(act.arguments).slice(0, 50)}...</code></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+          <div style="font-size: 0.8rem; color: var(--text-secondary);">
+            ${item.approval.status === 'APPROVED' ? `
+              ✓ <strong>Approved:</strong> ${new Date(item.approval.user_action_at).toLocaleTimeString()} | <strong>Executed:</strong> ${new Date(item.approval.executed_at).toLocaleTimeString()}
+            ` : `Created at: ${new Date(item.approval.created_at).toLocaleTimeString()}`}
+          </div>
+
+          ${item.approval.status === 'PENDING' ? `
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-secondary btn-sm" onclick="TaskPilot.rejectPlan(${item.approval.id}).then(() => loadApprovals())">Reject</button>
+              <button class="btn btn-success btn-sm" onclick="TaskPilot.approvePlan(${item.approval.id}).then(() => loadApprovals())">Approve & Execute</button>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `).join('');
+
+  } catch (e) {
+    TaskPilot.showToast("Failed to load approvals", "error");
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => loadApprovals());
+</script>
+{% endblock %}

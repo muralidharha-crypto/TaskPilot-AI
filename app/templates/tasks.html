@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+  <div>
+    <h2 style="font-size: 1.4rem; font-weight: 800;">Task Management Center</h2>
+    <p style="font-size: 0.85rem; color: var(--text-secondary);">
+      Manage goals, subtasks, priorities, and deadlines managed by the Task Manager Tool.
+    </p>
+  </div>
+  <button class="btn btn-primary" onclick="openNewTaskModal()">
+    <span>➕</span> Add New Task
+  </button>
+</div>
+
+<!-- Task Filter Tabs -->
+<div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+  <button class="btn btn-secondary btn-sm active" onclick="filterTasks('ALL')">All Tasks</button>
+  <button class="btn btn-secondary btn-sm" onclick="filterTasks('PENDING')">Pending</button>
+  <button class="btn btn-secondary btn-sm" onclick="filterTasks('COMPLETED')">Completed</button>
+  <button class="btn btn-secondary btn-sm" onclick="filterTasks('OVERDUE')">Overdue</button>
+</div>
+
+<!-- Task Grid -->
+<div id="tasksGrid" class="grid-3">
+  <!-- Loaded via JS -->
+</div>
+
+<!-- Add Task Modal -->
+<div class="modal-overlay" id="newTaskModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">Create New Task</h3>
+      <button class="modal-close" onclick="closeNewTaskModal()">&times;</button>
+    </div>
+    <form id="newTaskForm" onsubmit="handleCreateTask(event)">
+      <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+        <div>
+          <label style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Title</label>
+          <input type="text" id="taskTitle" required class="goal-textarea" style="min-height: 40px;" placeholder="e.g. Operating Systems Lab Assignment" />
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Description</label>
+          <textarea id="taskDesc" class="goal-textarea" style="min-height: 60px;" placeholder="Details and deliverables..."></textarea>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div>
+            <label style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Priority</label>
+            <select id="taskPriority" class="goal-textarea" style="min-height: 40px;">
+              <option value="HIGH">HIGH Priority</option>
+              <option value="MEDIUM" selected>MEDIUM Priority</option>
+              <option value="LOW">LOW Priority</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Deadline Date</label>
+            <input type="date" id="taskDeadline" class="goal-textarea" style="min-height: 40px;" />
+          </div>
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Estimated Hours</label>
+          <input type="number" id="taskDuration" step="0.5" value="2.0" class="goal-textarea" style="min-height: 40px;" />
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Subtasks (One per line)</label>
+          <textarea id="taskSubtasks" class="goal-textarea" style="min-height: 70px;" placeholder="Review requirements&#10;Implement core logic&#10;Write tests"></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeNewTaskModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Task</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let allLoadedTasks = [];
+
+async function loadAllTasks() {
+  try {
+    const res = await fetch('/api/tasks');
+    allLoadedTasks = await res.json();
+    renderTasks(allLoadedTasks);
+  } catch (e) {
+    TaskPilot.showToast("Failed to load tasks", "error");
+  }
+}
+
+function filterTasks(status) {
+  if (status === 'ALL') {
+    renderTasks(allLoadedTasks);
+  } else {
+    renderTasks(allLoadedTasks.filter(t => t.status === status));
+  }
+}
+
+function renderTasks(tasks) {
+  const container = document.getElementById('tasksGrid');
+  if (!container) return;
+  
+  if (tasks.length === 0) {
+    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-muted);">No tasks found.</div>`;
+    return;
+  }
+
+  container.innerHTML = tasks.map(t => `
+    <div class="card">
+      <div class="card-header">
+        <span class="badge badge-${t.priority.toLowerCase()}">${t.priority} (Score: ${t.priority_score})</span>
+        <span class="badge badge-pending">${t.status}</span>
+      </div>
+      <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem;">${t.title}</h3>
+      <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.75rem;">${t.description || 'No description provided.'}</p>
+      
+      <div style="font-size: 0.78rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.75rem;">
+        <div>📅 <strong>Deadline:</strong> ${t.deadline || 'Flexible'}</div>
+        <div>⏱️ <strong>Effort:</strong> ${t.duration_hours} hours</div>
+      </div>
+
+      <div style="border-top: 1px solid var(--border); padding-top: 0.5rem; margin-bottom: 0.75rem;">
+        <div style="font-size: 0.78rem; font-weight: 700; color: #a5b4fc; margin-bottom: 0.3rem;">
+          Subtasks (${(t.subtasks || []).length}):
+        </div>
+        <div class="subtask-tree">
+          ${(t.subtasks || []).map(st => `
+            <div>↳ ${st.title} (${st.duration_hours}h)</div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 0.65rem;">
+        <button class="btn btn-danger btn-sm" onclick="handleDeleteTask(${t.id})">Delete</button>
+        ${t.status !== 'COMPLETED' ? `
+          <button class="btn btn-success btn-sm" onclick="TaskPilot.completeTask(${t.id}).then(() => loadAllTasks())">
+            ✓ Complete
+          </button>
+        ` : `<span style="color: var(--success); font-size: 0.8rem; font-weight: 600;">✓ Completed</span>`}
+      </div>
+    </div>
+  `).join('');
+}
+
+function openNewTaskModal() {
+  document.getElementById('newTaskModal').classList.add('active');
+}
+
+function closeNewTaskModal() {
+  document.getElementById('newTaskModal').classList.remove('active');
+}
+
+async function handleCreateTask(e) {
+  e.preventDefault();
+  const subtext = document.getElementById('taskSubtasks').value.split('\n').filter(s => s.trim().length > 0);
+  const subtasks = subtext.map(st => ({ title: st.trim(), duration_hours: 0.5 }));
+
+  const payload = {
+    title: document.getElementById('taskTitle').value.trim(),
+    description: document.getElementById('taskDesc').value.trim(),
+    priority: document.getElementById('taskPriority').value,
+    deadline: document.getElementById('taskDeadline').value || null,
+    duration_hours: parseFloat(document.getElementById('taskDuration').value || 1.0),
+    subtasks: subtasks
+  };
+
+  try {
+    const res = await fetch('/api/tasks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      TaskPilot.showToast("Task created successfully!", "success");
+      closeNewTaskModal();
+      document.getElementById('newTaskForm').reset();
+      loadAllTasks();
+    }
+  } catch (err) {
+    TaskPilot.showToast("Failed to create task", "error");
+  }
+}
+
+async function handleDeleteTask(taskId) {
+  if (!confirm("Are you sure you want to delete this task?")) return;
+  try {
+    const res = await fetch(`/api/tasks/${taskId}`, { method: 'DELETE' });
+    if (res.ok) {
+      TaskPilot.showToast("Task deleted", "info");
+      loadAllTasks();
+    }
+  } catch (e) {
+    TaskPilot.showToast("Failed to delete task", "error");
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => loadAllTasks());
+</script>
+{% endblock %}

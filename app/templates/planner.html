@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+  <div>
+    <h2 style="font-size: 1.4rem; font-weight: 800;">Visual Schedule Planner</h2>
+    <p style="font-size: 0.85rem; color: var(--text-secondary);">
+      Chronological execution timeline balancing daily capacity, task urgency, and subtask dependencies.
+    </p>
+  </div>
+  <div style="display: flex; gap: 0.75rem;">
+    <button class="btn btn-warning" onclick="TaskPilot.handleSimulateDelay()">
+      <span>⚠️</span> Simulate: Missed Session / Replan
+    </button>
+    <button class="btn btn-primary" onclick="generateNewPlan()">
+      <span>🔄</span> Regenerate Plan
+    </button>
+  </div>
+</div>
+
+<!-- Controls Bar -->
+<div class="card" style="margin-bottom: 1.5rem; padding: 1rem;">
+  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <label style="font-size: 0.85rem; font-weight: 600;">Daily Capacity:</label>
+      <select id="dailyHoursSelect" class="goal-textarea" style="min-height: 36px; width: 140px; padding: 0.3rem 0.6rem;" onchange="generateNewPlan()">
+        <option value="2.0">2.0 Hours/Day</option>
+        <option value="3.0" selected>3.0 Hours/Day</option>
+        <option value="4.0">4.0 Hours/Day</option>
+        <option value="5.0">5.0 Hours/Day</option>
+      </select>
+    </div>
+    <div style="font-size: 0.82rem; color: var(--text-secondary);">
+      Default study window: <strong>6:00 PM – 9:00 PM</strong> daily
+    </div>
+  </div>
+</div>
+
+<!-- Days Timeline Grid -->
+<div id="plannerDaysGrid" class="timeline-list">
+  <!-- Loaded via JS -->
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function generateNewPlan() {
+  const dailyHours = document.getElementById('dailyHoursSelect').value;
+  TaskPilot.showToast("Generating schedule...", "info");
+  try {
+    const res = await fetch('/api/planner/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ daily_hours: parseFloat(dailyHours) })
+    });
+    const plan = await res.json();
+    renderPlannerDays(plan);
+  } catch (e) {
+    TaskPilot.showToast("Failed to generate plan", "error");
+  }
+}
+
+async function loadExistingSchedule() {
+  try {
+    const res = await fetch('/api/schedule');
+    const schedules = await res.json();
+    if (schedules.length > 0) {
+      // Group by date
+      const grouped = {};
+      schedules.forEach(s => {
+        if (!grouped[s.date_str]) grouped[s.date_str] = [];
+        grouped[s.date_str].push(s);
+      });
+
+      const days = Object.keys(grouped).sort().map(d => ({
+        date: d,
+        day_name: new Date(d).toLocaleDateString('en-US', { weekday: 'long' }),
+        formatted_date: new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        total_hours: grouped[d].reduce((acc, curr) => acc + curr.duration_hours, 0),
+        sessions: grouped[d]
+      }));
+
+      renderPlannerDays({ days });
+    } else {
+      generateNewPlan();
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function renderPlannerDays(plan) {
+  const container = document.getElementById('plannerDaysGrid');
+  if (!container) return;
+
+  if (!plan.days || plan.days.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+        No schedule generated. Ensure there are active tasks in the Task Manager or run the Autonomous Demo.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = plan.days.map(d => `
+    <div class="day-block">
+      <div class="day-header">
+        <span>📅 ${d.day_name}, ${d.formatted_date}</span>
+        <span class="badge badge-low">${d.total_hours} hrs scheduled</span>
+      </div>
+      <div>
+        ${d.sessions.map(s => `
+          <div class="session-slot">
+            <span class="session-time">⏰ ${s.start_time} - ${s.end_time}</span>
+            <div style="flex: 1; padding: 0 1rem;">
+              <span style="font-weight: 600;">${s.title}</span>
+              <div style="font-size: 0.75rem; color: var(--text-secondary);">${s.notes || ''}</div>
+            </div>
+            <span class="badge badge-${(s.priority || 'medium').toLowerCase()}">${s.priority || 'MEDIUM'}</span>
+            <span class="badge badge-${s.status === 'COMPLETED' ? 'success' : s.status === 'MISSED' ? 'high' : 'pending'}" style="margin-left: 0.5rem;">
+              ${s.status || 'SCHEDULED'}
+            </span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+document.addEventListener('DOMContentLoaded', () => loadExistingSchedule());
+</script>
+{% endblock %}
