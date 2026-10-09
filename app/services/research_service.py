@@ -45,12 +45,19 @@ class ResearchService:
             return {
                 "run_id": run_id,
                 "research_id": summary_results.get("id"),
-                "goal": topic,
+                "goal": summary_results.get("topic", topic),
+                "topic": summary_results.get("topic", topic),
                 "provider": search_results.get("provider"),
-                "sources": summary_results["sources"],
-                "findings": summary_results["findings"],
-                "summary": summary_results["summary"],
-                "action_items": summary_results["action_items"],
+                "direct_answer": summary_results.get("direct_answer", ""),
+                "executive_summary": summary_results.get("executive_summary", ""),
+                "summary": summary_results.get("direct_answer", ""),
+                "key_concepts": summary_results.get("key_concepts", []),
+                "findings": summary_results.get("findings", []),
+                "benefits": summary_results.get("benefits", []),
+                "risks": summary_results.get("risks", []),
+                "real_world_examples": summary_results.get("real_world_examples", []),
+                "action_items": summary_results.get("action_items", []),
+                "sources": summary_results.get("sources", []),
                 "completed_at": now
             }
         finally:

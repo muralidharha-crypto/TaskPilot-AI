@@ -38,11 +38,14 @@ CREATE TABLE IF NOT EXISTS schedules (
     start_time TEXT NOT NULL,
     end_time TEXT NOT NULL,
     duration_hours REAL DEFAULT 1.0,
+    event_type TEXT DEFAULT 'TASK_STUDY',
     status TEXT DEFAULT 'SCHEDULED',
     notes TEXT,
     created_at TEXT NOT NULL,
     FOREIGN KEY (task_id) REFERENCES tasks (id) ON DELETE SET NULL
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_schedules_slot ON schedules (date_str, start_time, end_time, title);
 
 CREATE TABLE IF NOT EXISTS plans (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -142,6 +145,18 @@ class Database:
         Path(db_path).parent.mkdir(parents=True, exist_ok=True)
         conn = sqlite3.connect(db_path)
         conn.executescript(SCHEMA_SQL)
+
+        # Migration: ensure event_type column exists on schedules
+        try:
+            cursor = conn.cursor()
+            cursor.execute("PRAGMA table_info(schedules);")
+            columns = [row[1] for row in cursor.fetchall()]
+            if "event_type" not in columns:
+                cursor.execute("ALTER TABLE schedules ADD COLUMN event_type TEXT DEFAULT 'TASK_STUDY';")
+                conn.commit()
+        except Exception:
+            pass
+
         conn.commit()
         conn.close()
 

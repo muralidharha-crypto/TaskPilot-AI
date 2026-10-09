@@ -17,35 +17,65 @@ class TaskTool:
         conn = Database.get_connection()
         try:
             cursor = conn.cursor()
-            cursor.execute(
-                """
-                INSERT INTO tasks (title, description, priority, priority_score, deadline, 
-                                   duration_hours, status, dependencies, created_at, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, 'PENDING', ?, ?, ?)
-                """,
-                (title.strip(), description, priority.upper(), float(priority_score), 
-                 deadline, float(duration_hours), deps_json, now, now)
-            )
-            task_id = cursor.lastrowid
+            clean_title = title.strip()
+            # Check if active task with same title already exists
+            cursor.execute("SELECT id FROM tasks WHERE LOWER(title) = LOWER(?) AND status != 'COMPLETED'", (clean_title,))
+            existing = cursor.fetchone()
+            if existing:
+                task_id = existing["id"]
+                cursor.execute(
+                    """
+                    UPDATE tasks 
+                    SET description = ?, priority = ?, priority_score = ?, deadline = ?,
+                        duration_hours = ?, dependencies = ?, updated_at = ?
+                    WHERE id = ?
+                    """,
+                    (description, priority.upper(), float(priority_score), deadline, float(duration_hours), deps_json, now, task_id)
+                )
+            else:
+                cursor.execute(
+                    """
+                    INSERT INTO tasks (title, description, priority, priority_score, deadline, 
+                                       duration_hours, status, dependencies, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, 'PENDING', ?, ?, ?)
+                    """,
+                    (clean_title, description, priority.upper(), float(priority_score), 
+                     deadline, float(duration_hours), deps_json, now, now)
+                )
+                task_id = cursor.lastrowid
 
             created_subtasks = []
             for idx, st in enumerate(subtasks):
                 st_title = st if isinstance(st, str) else st.get("title", "")
                 st_dur = 0.5 if isinstance(st, str) else st.get("duration_hours", 0.5)
                 if st_title:
+                    # Avoid duplicate subtask under same task
                     cursor.execute(
-                        """
-                        INSERT INTO subtasks (task_id, title, status, duration_hours, order_idx, created_at)
-                        VALUES (?, ?, 'PENDING', ?, ?, ?)
-                        """,
-                        (task_id, st_title, float(st_dur), idx, now)
+                        "SELECT id FROM subtasks WHERE task_id = ? AND LOWER(title) = LOWER(?)",
+                        (task_id, st_title.strip())
                     )
-                    created_subtasks.append({
-                        "id": cursor.lastrowid,
-                        "title": st_title,
-                        "status": "PENDING",
-                        "duration_hours": st_dur
-                    })
+                    st_exists = cursor.fetchone()
+                    if not st_exists:
+                        cursor.execute(
+                            """
+                            INSERT INTO subtasks (task_id, title, status, duration_hours, order_idx, created_at)
+                            VALUES (?, ?, 'PENDING', ?, ?, ?)
+                            """,
+                            (task_id, st_title.strip(), float(st_dur), idx, now)
+                        )
+                        created_subtasks.append({
+                            "id": cursor.lastrowid,
+                            "title": st_title.strip(),
+                            "status": "PENDING",
+                            "duration_hours": st_dur
+                        })
+                    else:
+                        created_subtasks.append({
+                            "id": st_exists["id"],
+                            "title": st_title.strip(),
+                            "status": "PENDING",
+                            "duration_hours": st_dur
+                        })
 
             conn.commit()
             return {
