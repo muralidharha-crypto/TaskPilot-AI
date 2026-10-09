@@ -1,7 +1,11 @@
 import json
 from datetime import datetime
-from app.tools.research_tool import ResearchTool
+from zoneinfo import ZoneInfo
+
+from app.config import Config
 from app.models.database import Database
+from app.tools.research_tool import ResearchTool
+
 
 class ResearchService:
     @staticmethod
@@ -14,7 +18,7 @@ class ResearchService:
         4. Summarize
         5. Produce Action Items
         """
-        now = datetime.now().isoformat()
+        now = datetime.now(ZoneInfo(Config.TIMEZONE)).isoformat()
         
         # Step 1 & 2: Search sources
         search_results = ResearchTool.search_information(topic)

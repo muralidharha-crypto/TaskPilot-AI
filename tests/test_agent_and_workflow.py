@@ -1,9 +1,9 @@
-import pytest
 from app.services.agent import AgentService
-from app.services.replanner import ReplannerService
 from app.services.intent_analyzer import IntentAnalyzer
-from app.tools.task_tool import TaskTool
+from app.services.replanner import ReplannerService
 from app.tools.scheduler_tool import SchedulerTool
+from app.tools.task_tool import TaskTool
+
 
 def test_intent_analyzer():
     prompt = "I have a Java exam on Monday, DBMS assignment due tomorrow, and project presentation on Wednesday. I have 3 hours available every evening. Create a study plan."

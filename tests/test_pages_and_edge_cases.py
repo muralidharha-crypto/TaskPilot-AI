@@ -1,10 +1,10 @@
-import pytest
-from app.tools.planner_tool import PlannerTool
-from app.services.planner import PlannerService
 from app.services.agent import AgentService
+from app.services.planner import PlannerService
 from app.tools.monitor_tool import MonitorTool
-from app.tools.task_tool import TaskTool
+from app.tools.planner_tool import PlannerTool
 from app.tools.scheduler_tool import SchedulerTool
+from app.tools.task_tool import TaskTool
+
 
 def test_pages_render(client):
     """Ensure all web pages render cleanly (HTTP 200)."""

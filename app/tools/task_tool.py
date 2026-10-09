@@ -1,6 +1,10 @@
 import json
 from datetime import datetime
+from zoneinfo import ZoneInfo
+
+from app.config import Config
 from app.models.database import Database
+
 
 class TaskTool:
     @staticmethod
@@ -10,7 +14,7 @@ class TaskTool:
         if not title or not title.strip():
             raise ValueError("Task title cannot be empty")
 
-        now = datetime.now().isoformat()
+        now = datetime.now(ZoneInfo(Config.TIMEZONE)).isoformat()
         deps_json = json.dumps(dependencies or [])
         subtasks = subtasks or []
 
@@ -108,7 +112,7 @@ class TaskTool:
 
             updates = []
             params = []
-            now = datetime.now().isoformat()
+            now = datetime.now(ZoneInfo(Config.TIMEZONE)).isoformat()
 
             if title is not None:
                 updates.append("title = ?")
@@ -149,7 +153,7 @@ class TaskTool:
         conn = Database.get_connection()
         try:
             cursor = conn.cursor()
-            now = datetime.now().isoformat()
+            now = datetime.now(ZoneInfo(Config.TIMEZONE)).isoformat()
             cursor.execute("UPDATE tasks SET status = 'COMPLETED', updated_at = ? WHERE id = ?", (now, task_id))
             cursor.execute("UPDATE subtasks SET status = 'COMPLETED' WHERE task_id = ?", (task_id,))
             cursor.execute("UPDATE schedules SET status = 'COMPLETED' WHERE task_id = ?", (task_id,))

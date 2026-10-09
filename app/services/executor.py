@@ -1,7 +1,11 @@
 import json
 from datetime import datetime
+from zoneinfo import ZoneInfo
+
+from app.config import Config
 from app.models.database import Database
 from app.tools.tool_registry import registry
+
 
 class ToolExecutor:
     @staticmethod
@@ -29,8 +33,8 @@ class ToolExecutor:
             run_id = approval["run_id"]
             actions = json.loads(approval["proposed_actions_json"])
 
-            user_action_at = datetime.now().isoformat()
-            execution_start_at = datetime.now().isoformat()
+            user_action_at = datetime.now(ZoneInfo(Config.TIMEZONE)).isoformat()
+            execution_start_at = datetime.now(ZoneInfo(Config.TIMEZONE)).isoformat()
 
             # Mark approval status
             cursor.execute(
@@ -75,7 +79,7 @@ class ToolExecutor:
                     "output": exec_res.get("data") if exec_res.get("success") else exec_res.get("error")
                 })
 
-            executed_at = datetime.now().isoformat()
+            executed_at = datetime.now(ZoneInfo(Config.TIMEZONE)).isoformat()
 
             # Finalize approval and agent run
             cursor.execute(

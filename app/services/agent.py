@@ -1,13 +1,15 @@
 import json
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
+from app.config import Config
 from app.models.database import Database
-from app.services.intent_analyzer import IntentAnalyzer
-from app.services.decomposer import TaskDecomposer
-from app.services.priority_engine import PriorityEngine
-from app.services.planner import PlannerService
 from app.services.approval_manager import ApprovalManager
+from app.services.decomposer import TaskDecomposer
 from app.services.executor import ToolExecutor
+from app.services.intent_analyzer import IntentAnalyzer
+from app.services.planner import PlannerService
+from app.services.priority_engine import PriorityEngine
 from app.services.replanner import ReplannerService
 from app.services.research_service import ResearchService
 
@@ -48,7 +50,7 @@ class AgentService:
                 "User goal cannot be empty."
             )
 
-        now = datetime.now().isoformat()
+        now = datetime.now(ZoneInfo(Config.TIMEZONE)).isoformat()
 
         conn = Database.get_connection()
 
@@ -346,7 +348,7 @@ class AgentService:
                     WHERE id = ?
                     """,
                     (
-                        datetime.now().isoformat(),
+                        datetime.now(ZoneInfo(Config.TIMEZONE)).isoformat(),
                         run_id
                     )
                 )
@@ -537,7 +539,7 @@ class AgentService:
                     json.dumps(
                         timeline
                     ),
-                    datetime.now().isoformat(),
+                    datetime.now(ZoneInfo(Config.TIMEZONE)).isoformat(),
                     run_id
                 )
             )

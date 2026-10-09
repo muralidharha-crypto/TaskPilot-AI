@@ -1,180 +1,428 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Section 1: AI Goal Input -->
-<div class="hero-goal">
-  <div class="hero-goal-title">Autonomous Goal Planning & Execution</div>
-  <div class="hero-goal-subtitle">
-    Describe your deadlines and availability in natural language. TaskPilot will analyze intent, decompose subtasks, prioritize urgency, generate schedules, and request approval before execution.
-  </div>
+<main id="main-content">
 
-  <div class="goal-input-box">
-    <textarea id="goalInput" class="goal-textarea" placeholder="e.g., I have a Java exam on Monday, DBMS assignment due tomorrow, and project presentation on Wednesday. I have 3 hours available every evening. Create a study plan."></textarea>
-    
-    <div class="goal-action-bar">
-      <div class="suggestions">
-        <span style="font-size: 0.75rem; color: var(--text-muted);">Quick Prompts:</span>
-        <button class="suggestion-chip" data-goal="I have a Java exam on Monday, DBMS assignment due tomorrow, and project presentation on Wednesday. I have 3 hours available every evening. Create a study plan.">
-          🎓 Student Deadlines Demo
-        </button>
-        <button class="suggestion-chip" data-goal="Research the advantages and disadvantages of AI agents in education.">
-          🔍 Academic Research Goal
-        </button>
-        <button class="suggestion-chip" data-goal="I couldn't study today. Replan my schedule around my remaining deadlines.">
-          ⚠️ Simulate Missed Day / Replan
-        </button>
-      </div>
+  <!-- Section 1: AI Goal Input -->
+  <section class="hero-goal" aria-labelledby="goal-heading">
+    <h1 id="goal-heading" class="hero-goal-title">
+      Autonomous Goal Planning &amp; Execution
+    </h1>
 
-      <div style="display: flex; gap: 0.5rem;">
-        <button class="btn btn-warning btn-sm" id="btnSimulateDelay" title="Simulate: Couldn't study today to demonstrate autonomous replanning">
-          <span>⚡</span> Simulate: Couldn't Study Today
-        </button>
-        <button class="btn btn-primary" id="btnRunGoal">
-          <span>🚀</span> Plan & Execute
-        </button>
+    <p class="hero-goal-subtitle">
+      Describe your deadlines and availability in natural language.
+      TaskPilot analyzes your goals, prioritizes tasks, creates schedules,
+      and requests approval before execution.
+    </p>
+
+    <div class="goal-input-box">
+      <label for="goalInput" class="form-label">
+        Describe your goal and available time
+      </label>
+
+      <textarea
+        id="goalInput"
+        class="goal-textarea"
+        aria-describedby="goal-help"
+        placeholder="Example: I have a Java exam on Monday, a DBMS assignment due tomorrow, and a presentation on Wednesday. I have three hours available every evening."
+      ></textarea>
+
+      <p id="goal-help" class="text-muted">
+        Include deadlines, priorities, and the time you can dedicate.
+      </p>
+
+      <div class="goal-action-bar">
+        <div class="suggestions" aria-label="Suggested goals">
+          <span class="suggestions-label">Quick prompts:</span>
+
+          <button
+            type="button"
+            class="suggestion-chip"
+            data-goal="I have a Java exam on Monday, DBMS assignment due tomorrow, and project presentation on Wednesday. I have 3 hours available every evening. Create a study plan."
+          >
+            🎓 Student Deadlines Demo
+          </button>
+
+          <button
+            type="button"
+            class="suggestion-chip"
+            data-goal="Research the advantages and disadvantages of AI agents in education."
+          >
+            🔍 Academic Research Goal
+          </button>
+
+          <button
+            type="button"
+            class="suggestion-chip"
+            data-goal="I couldn't study today. Replan my schedule around my remaining deadlines."
+          >
+            ⚠️ Simulate Missed Day / Replan
+          </button>
+        </div>
+
+        <div class="goal-action-buttons">
+          <button
+            type="button"
+            class="btn btn-warning btn-sm"
+            id="btnSimulateDelay"
+            title="Simulate a missed study day and demonstrate schedule replanning"
+          >
+            <span aria-hidden="true">⚡</span>
+            Simulate: Couldn't Study Today
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            id="btnRunGoal"
+          >
+            <span aria-hidden="true">🚀</span>
+            Plan &amp; Execute
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+  </section>
 
-<!-- Dynamic Agent Plan Results & Human-in-the-Loop Section -->
-<div id="planResultsSection" style="display: none; margin-bottom: 2rem;">
-  <div class="card" style="border-color: #6366f1; background: linear-gradient(180deg, #18223d 0%, #111827 100%);">
-    <div class="card-header">
-      <div class="card-title" style="color: #c7d2fe;">
-        <span>🧠</span> AI Goal Understanding & Structured Plan
+  <!-- AI Plan Results -->
+  <section
+    id="planResultsSection"
+    aria-labelledby="plan-results-heading"
+    aria-live="polite"
+    aria-atomic="false"
+    hidden
+    style="margin-bottom: 2rem;"
+  >
+    <div
+      class="card"
+      style="border-color: #6366f1; background: linear-gradient(180deg, #18223d 0%, #111827 100%);"
+    >
+      <div class="card-header">
+        <h2 id="plan-results-heading" class="card-title" style="color: #c7d2fe;">
+          <span aria-hidden="true">🧠</span>
+          AI Goal Understanding &amp; Structured Plan
+        </h2>
+
+        <span class="badge badge-medium">
+          Awaiting Human Approval
+        </span>
       </div>
-      <span class="badge badge-medium">Awaiting Human Approval</span>
-    </div>
 
-    <!-- Human-in-the-loop approval banner -->
-    <div id="approvalContent"></div>
+      <div
+        id="approvalContent"
+        aria-label="Plan approval details"
+      ></div>
 
-    <div class="grid-2">
-      <!-- Left: Understanding Breakdown -->
-      <div class="card" style="background: var(--bg-input);">
-        <div class="card-header">
-          <div class="card-title" style="font-size: 0.95rem;">
-            <span>🔍</span> Step 1: Intent & Entity Understanding
+      <div class="grid-2">
+        <section
+          class="card"
+          style="background: var(--bg-input);"
+          aria-labelledby="understanding-heading"
+        >
+          <div class="card-header">
+            <h3 id="understanding-heading" class="card-title section-title">
+              <span aria-hidden="true">🔍</span>
+              Step 1: Intent &amp; Entity Understanding
+            </h3>
           </div>
-        </div>
-        <div id="understandingContent"></div>
-      </div>
 
-      <!-- Right: Multi-Factor Priority Breakdown -->
-      <div class="card" style="background: var(--bg-input);">
-        <div class="card-header">
-          <div class="card-title" style="font-size: 0.95rem;">
-            <span>📊</span> Step 2: Explainable Prioritization (0-100)
+          <div id="understandingContent"></div>
+        </section>
+
+        <section
+          class="card"
+          style="background: var(--bg-input);"
+          aria-labelledby="priority-heading"
+        >
+          <div class="card-header">
+            <h3 id="priority-heading" class="card-title section-title">
+              <span aria-hidden="true">📊</span>
+              Step 2: Explainable Prioritization (0–100)
+            </h3>
           </div>
-        </div>
-        <div id="priorityContent"></div>
+
+          <div id="priorityContent"></div>
+        </section>
       </div>
+
+      <section
+        class="schedule-results"
+        aria-labelledby="generated-schedule-heading"
+      >
+        <h3 id="generated-schedule-heading" class="section-title">
+          <span aria-hidden="true">📅</span>
+          Step 3: Generated Daily Execution Schedule
+        </h3>
+
+        <div id="generatedScheduleContent"></div>
+      </section>
+    </div>
+  </section>
+
+  <!-- Progress Metrics -->
+  <section aria-labelledby="metrics-heading">
+    <h2 id="metrics-heading" class="visually-hidden">
+      Task progress metrics
+    </h2>
+
+    <div class="grid-4 metrics-grid">
+      <article class="stat-card">
+        <div>
+          <h3 class="stat-label">Completed Tasks</h3>
+          <p class="stat-value" id="statCompleted" style="color: var(--success);">
+            0
+          </p>
+        </div>
+        <span class="stat-icon" aria-hidden="true">✅</span>
+      </article>
+
+      <article class="stat-card">
+        <div>
+          <h3 class="stat-label">In Progress</h3>
+          <p class="stat-value" id="statInProgress" style="color: var(--info);">
+            0
+          </p>
+        </div>
+        <span class="stat-icon" aria-hidden="true">⏳</span>
+      </article>
+
+      <article class="stat-card">
+        <div>
+          <h3 class="stat-label">Pending Tasks</h3>
+          <p class="stat-value" id="statPending" style="color: var(--warning);">
+            0
+          </p>
+        </div>
+        <span class="stat-icon" aria-hidden="true">📋</span>
+      </article>
+
+      <article class="stat-card">
+        <div>
+          <h3 class="stat-label">Overdue Tasks</h3>
+          <p class="stat-value" id="statOverdue" style="color: var(--danger);">
+            0
+          </p>
+        </div>
+        <span class="stat-icon" aria-hidden="true">⚠️</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- Main Dashboard -->
+  <div class="grid-2 dashboard-grid">
+
+    <!-- Tasks and Schedule -->
+    <div class="dashboard-column">
+
+      <section class="card" aria-labelledby="active-tasks-heading">
+        <div class="card-header">
+          <h2 id="active-tasks-heading" class="card-title">
+            <span aria-hidden="true">📋</span>
+            Active Milestone Tasks
+          </h2>
+
+          <a href="/tasks" class="btn btn-secondary btn-sm">
+            View All Tasks
+          </a>
+        </div>
+
+        <div
+          id="todayTasksList"
+          class="task-list"
+          aria-label="Active tasks"
+        ></div>
+      </section>
+
+      <section class="card" aria-labelledby="study-sessions-heading">
+        <div class="card-header">
+          <h2 id="study-sessions-heading" class="card-title">
+            <span aria-hidden="true">⏰</span>
+            Scheduled Study Sessions
+          </h2>
+
+          <a href="/planner" class="btn btn-secondary btn-sm">
+            Open Planner
+          </a>
+        </div>
+
+        <div
+          id="todayScheduleList"
+          class="timeline-list"
+          aria-label="Scheduled study sessions"
+        ></div>
+      </section>
+
     </div>
 
-    <!-- Bottom: Generated Chronological Schedule -->
-    <div style="margin-top: 1.25rem;">
-      <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; color: #c7d2fe; display: flex; align-items: center; gap: 0.4rem;">
-        <span>📅</span> Step 3: Generated Daily Execution Schedule
-      </h4>
-      <div id="generatedScheduleContent"></div>
-    </div>
-  </div>
-</div>
+    <!-- Agent Activity and Architecture -->
+    <div class="dashboard-column">
 
-<!-- Section 5: Progress & Metrics -->
-<div class="grid-4" style="margin-bottom: 1.5rem;">
-  <div class="stat-card">
-    <div>
-      <div class="stat-label">Completed Tasks</div>
-      <div class="stat-value" id="statCompleted" style="color: var(--success);">0</div>
-    </div>
-    <div class="stat-icon">✅</div>
-  </div>
-  <div class="stat-card">
-    <div>
-      <div class="stat-label">In Progress</div>
-      <div class="stat-value" id="statInProgress" style="color: var(--info);">0</div>
-    </div>
-    <div class="stat-icon">⏳</div>
-  </div>
-  <div class="stat-card">
-    <div>
-      <div class="stat-label">Pending Tasks</div>
-      <div class="stat-value" id="statPending" style="color: var(--warning);">0</div>
-    </div>
-    <div class="stat-icon">📋</div>
-  </div>
-  <div class="stat-card">
-    <div>
-      <div class="stat-label">Overdue Tasks</div>
-      <div class="stat-value" id="statOverdue" style="color: var(--danger);">0</div>
-    </div>
-    <div class="stat-icon">⚠️</div>
-  </div>
-</div>
+      <section class="card" aria-labelledby="agent-feed-heading">
+        <div class="card-header">
+          <h2 id="agent-feed-heading" class="card-title">
+            <span aria-hidden="true">🤖</span>
+            Autonomous Agent Feed
+          </h2>
 
-<!-- Main Dashboard Grid -->
-<div class="grid-2">
-  <!-- Left Column: Today's Tasks & Today's Schedule -->
-  <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-    <!-- Section 2: Active Tasks -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">
-          <span>📋</span> Active Milestone Tasks
+          <span class="badge badge-success">
+            Live Monitor
+          </span>
         </div>
-        <a href="/tasks" class="btn btn-secondary btn-sm">View All Tasks</a>
-      </div>
-      <div id="todayTasksList" class="task-list">
-        <!-- Injected via JavaScript -->
-      </div>
-    </div>
 
-    <!-- Section 3: Scheduled Sessions -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">
-          <span>⏰</span> Scheduled Study Sessions
+        <div
+          id="agentActivityFeed"
+          class="agent-feed"
+          role="log"
+          aria-label="Autonomous agent activity"
+          aria-live="polite"
+          aria-relevant="additions text"
+        ></div>
+      </section>
+
+      <section
+        class="card architecture-card"
+        aria-labelledby="architecture-heading"
+      >
+        <div class="card-header">
+          <h2 id="architecture-heading" class="card-title architecture-title">
+            <span aria-hidden="true">🧭</span>
+            Agent Finite State Machine
+          </h2>
         </div>
-        <a href="/planner" class="btn btn-secondary btn-sm">Open Planner</a>
-      </div>
-      <div id="todayScheduleList" class="timeline-list">
-        <!-- Injected via JavaScript -->
-      </div>
+
+        <p class="architecture-description">
+          <strong>Differentiator:</strong>
+          Unlike basic query chatbots, TaskPilot follows an autonomous
+          agent workflow.
+        </p>
+
+        <p class="agent-workflow" aria-label="Agent workflow">
+          Goal → Intent → Decompose → Prioritize → Plan → Approve → Act
+          → Monitor → Replan
+        </p>
+
+        <p class="architecture-description">
+          Critical actions require Human-in-the-Loop authorization and
+          are recorded in an audit trail.
+        </p>
+      </section>
+
     </div>
   </div>
 
-  <!-- Right Column: Live Agent Activity & System Status -->
-  <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-    <!-- Section 4: Live Agent Activity Feed -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">
-          <span>🤖</span> Autonomous Agent Feed
-        </div>
-        <span class="badge badge-success">Live Monitor</span>
-      </div>
-      <div id="agentActivityFeed" class="agent-feed">
-        <!-- Injected via JavaScript -->
-      </div>
-    </div>
+</main>
 
-    <!-- Architecture Visual Quick-Card -->
-    <div class="card" style="background: rgba(99, 102, 241, 0.05); border-color: rgba(99, 102, 241, 0.3);">
-      <div class="card-header">
-        <div class="card-title" style="font-size: 0.95rem; color: #a5b4fc;">
-          <span>🧭</span> Agent Finite State Machine
-        </div>
-      </div>
-      <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6;">
-        <p><strong>Differentiator:</strong> Unlike basic query chatbots, TaskPilot follows strict autonomous agent architecture:</p>
-        <div style="margin: 0.75rem 0; padding: 0.5rem; background: var(--bg-input); border-radius: var(--radius-sm); font-family: monospace; font-size: 0.75rem; color: #c7d2fe;">
-          GOAL ➔ INTENT ➔ DECOMPOSE ➔ PRIORITIZE ➔ PLAN ➔ APPROVE ➔ ACT ➔ MONITOR ➔ REPLAN
-        </div>
-        <p>Every critical action requires <strong>Human-in-the-Loop</strong> authorization and logs to an unalterable audit trail.</p>
-      </div>
-    </div>
-  </div>
-</div>
+<style>
+  /* Accessible text that remains available to screen readers */
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .suggestions-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+
+  .goal-action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .section-title {
+    font-size: 1rem;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .schedule-results {
+    margin-top: 1.25rem;
+  }
+
+  .metrics-grid {
+    margin-bottom: 1.5rem;
+  }
+
+  .dashboard-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-width: 0;
+  }
+
+  .architecture-card {
+    background: rgba(99, 102, 241, 0.08);
+    border-color: rgba(99, 102, 241, 0.4);
+  }
+
+  .architecture-title {
+    font-size: 1rem;
+    color: #c7d2fe;
+  }
+
+  .architecture-description {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
+  .agent-workflow {
+    margin: 1rem 0;
+    padding: 0.85rem;
+    overflow-wrap: anywhere;
+    background: var(--bg-input);
+    border-radius: var(--radius-sm);
+    font-family: monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    color: #c7d2fe;
+  }
+
+  /* Visible keyboard focus */
+  a:focus-visible,
+  button:focus-visible,
+  textarea:focus-visible,
+  input:focus-visible,
+  select:focus-visible {
+    outline: 3px solid #a5b4fc;
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 640px) {
+    .goal-action-buttons {
+      width: 100%;
+    }
+
+    .goal-action-buttons .btn {
+      flex: 1 1 auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
 {% endblock %}

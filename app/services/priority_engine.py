@@ -1,5 +1,6 @@
 from app.tools.planner_tool import PlannerTool
 
+
 class PriorityEngine:
     @staticmethod
     def rank(tasks):

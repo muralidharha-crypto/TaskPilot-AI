@@ -1,5 +1,9 @@
-from flask import Blueprint, render_template, jsonify
 from datetime import datetime
+from zoneinfo import ZoneInfo
+
+from flask import Blueprint, jsonify, render_template
+
+from app.config import Config
 
 web_bp = Blueprint('web', __name__)
 
@@ -42,5 +46,5 @@ def health_check():
         "status": "healthy",
         "service": "TaskPilot AI",
         "version": "1.0.0",
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now(ZoneInfo(Config.TIMEZONE)).isoformat()
     }), 200

@@ -1,0 +1,534 @@
+[
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 36,
+      "row": 46
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\routes\\web.py",
+    "fix": null,
+    "location": {
+      "column": 22,
+      "row": 46
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 46,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 29,
+      "row": 51
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\services\\agent.py",
+    "fix": null,
+    "location": {
+      "column": 15,
+      "row": 51
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 51,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 39,
+      "row": 349
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\services\\agent.py",
+    "fix": null,
+    "location": {
+      "column": 25,
+      "row": 349
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 349,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 35,
+      "row": 540
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\services\\agent.py",
+    "fix": null,
+    "location": {
+      "column": 21,
+      "row": 540
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 540,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 33,
+      "row": 59
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\services\\approval_manager.py",
+    "fix": null,
+    "location": {
+      "column": 19,
+      "row": 59
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 59,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 33,
+      "row": 112
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\services\\approval_manager.py",
+    "fix": null,
+    "location": {
+      "column": 19,
+      "row": 112
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 112,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 44,
+      "row": 34
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\services\\executor.py",
+    "fix": null,
+    "location": {
+      "column": 30,
+      "row": 34
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 34,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 48,
+      "row": 35
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\services\\executor.py",
+    "fix": null,
+    "location": {
+      "column": 34,
+      "row": 35
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 35,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 41,
+      "row": 80
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\services\\executor.py",
+    "fix": null,
+    "location": {
+      "column": 27,
+      "row": 80
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 80,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 29,
+      "row": 19
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\services\\research_service.py",
+    "fix": null,
+    "location": {
+      "column": 15,
+      "row": 19
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 19,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ011",
+    "end_location": {
+      "column": 29,
+      "row": 46
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\monitor_tool.py",
+    "fix": null,
+    "location": {
+      "column": 17,
+      "row": 46
+    },
+    "message": "`datetime.date.today()` used",
+    "name": "call-date-today",
+    "noqa_row": 46,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-date-today"
+  },
+  {
+    "cell": null,
+    "code": "DTZ011",
+    "end_location": {
+      "column": 29,
+      "row": 82
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\monitor_tool.py",
+    "fix": null,
+    "location": {
+      "column": 17,
+      "row": 82
+    },
+    "message": "`datetime.date.today()` used",
+    "name": "call-date-today",
+    "noqa_row": 82,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-date-today"
+  },
+  {
+    "cell": null,
+    "code": "DTZ011",
+    "end_location": {
+      "column": 29,
+      "row": 23
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\planner_tool.py",
+    "fix": null,
+    "location": {
+      "column": 17,
+      "row": 23
+    },
+    "message": "`datetime.date.today()` used",
+    "name": "call-date-today",
+    "noqa_row": 23,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-date-today"
+  },
+  {
+    "cell": null,
+    "code": "DTZ007",
+    "end_location": {
+      "column": 18,
+      "row": 32
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\planner_tool.py",
+    "fix": null,
+    "location": {
+      "column": 26,
+      "row": 29
+    },
+    "message": "Naive datetime constructed using `datetime.datetime.strptime()` without %z",
+    "name": "call-datetime-strptime-without-zone",
+    "noqa_row": 29,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-strptime-without-zone"
+  },
+  {
+    "cell": null,
+    "code": "DTZ007",
+    "end_location": {
+      "column": 22,
+      "row": 479
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\planner_tool.py",
+    "fix": null,
+    "location": {
+      "column": 25,
+      "row": 476
+    },
+    "message": "Naive datetime constructed using `datetime.datetime.strptime()` without %z",
+    "name": "call-datetime-strptime-without-zone",
+    "noqa_row": 476,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-strptime-without-zone"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 47,
+      "row": 511
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\planner_tool.py",
+    "fix": null,
+    "location": {
+      "column": 33,
+      "row": 511
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 511,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ007",
+    "end_location": {
+      "column": 14,
+      "row": 618
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\planner_tool.py",
+    "fix": null,
+    "location": {
+      "column": 13,
+      "row": 615
+    },
+    "message": "Naive datetime constructed using `datetime.datetime.strptime()` without %z",
+    "name": "call-datetime-strptime-without-zone",
+    "noqa_row": 615,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-strptime-without-zone"
+  },
+  {
+    "cell": null,
+    "code": "DTZ011",
+    "end_location": {
+      "column": 30,
+      "row": 620
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\planner_tool.py",
+    "fix": null,
+    "location": {
+      "column": 18,
+      "row": 620
+    },
+    "message": "`datetime.date.today()` used",
+    "name": "call-date-today",
+    "noqa_row": 620,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-date-today"
+  },
+  {
+    "cell": null,
+    "code": "DTZ007",
+    "end_location": {
+      "column": 18,
+      "row": 923
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\planner_tool.py",
+    "fix": null,
+    "location": {
+      "column": 34,
+      "row": 920
+    },
+    "message": "Naive datetime constructed using `datetime.datetime.strptime()` without %z",
+    "name": "call-datetime-strptime-without-zone",
+    "noqa_row": 920,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-strptime-without-zone"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 43,
+      "row": 988
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\planner_tool.py",
+    "fix": null,
+    "location": {
+      "column": 29,
+      "row": 988
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 988,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ011",
+    "end_location": {
+      "column": 36,
+      "row": 1011
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\planner_tool.py",
+    "fix": null,
+    "location": {
+      "column": 24,
+      "row": 1011
+    },
+    "message": "`datetime.date.today()` used",
+    "name": "call-date-today",
+    "noqa_row": 1011,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-date-today"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 47,
+      "row": 335
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\research_tool.py",
+    "fix": null,
+    "location": {
+      "column": 33,
+      "row": 335
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 335,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 29,
+      "row": 612
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\research_tool.py",
+    "fix": null,
+    "location": {
+      "column": 15,
+      "row": 612
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 612,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 29,
+      "row": 82
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\scheduler_tool.py",
+    "fix": null,
+    "location": {
+      "column": 15,
+      "row": 82
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 82,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 29,
+      "row": 15
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\task_tool.py",
+    "fix": null,
+    "location": {
+      "column": 15,
+      "row": 15
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 15,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 33,
+      "row": 113
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\task_tool.py",
+    "fix": null,
+    "location": {
+      "column": 19,
+      "row": 113
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 113,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 33,
+      "row": 154
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\task_tool.py",
+    "fix": null,
+    "location": {
+      "column": 19,
+      "row": 154
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 154,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  },
+  {
+    "cell": null,
+    "code": "DTZ005",
+    "end_location": {
+      "column": 35,
+      "row": 42
+    },
+    "filename": "D:\\Hackthon\\TaskPilot-AI\\app\\tools\\tool_registry.py",
+    "fix": null,
+    "location": {
+      "column": 21,
+      "row": 42
+    },
+    "message": "`datetime.datetime.now()` called without a `tz` argument",
+    "name": "call-datetime-now-without-tzinfo",
+    "noqa_row": 42,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo"
+  }
+]

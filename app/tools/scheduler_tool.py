@@ -1,4 +1,7 @@
 from datetime import datetime
+from zoneinfo import ZoneInfo
+
+from app.config import Config
 from app.models.database import Database
 
 
@@ -78,7 +81,7 @@ class SchedulerTool:
         if duration_hours <= 0:
             duration_hours = 1.0
 
-        now = datetime.now().isoformat()
+        now = datetime.now(ZoneInfo(Config.TIMEZONE)).isoformat()
 
         conn = Database.get_connection()
 

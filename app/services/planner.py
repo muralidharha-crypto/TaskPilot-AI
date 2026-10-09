@@ -1,4 +1,7 @@
-from datetime import date
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+from app.config import Config
 from app.tools.planner_tool import PlannerTool
 
 
@@ -55,7 +58,7 @@ class PlannerService:
         plan_result = PlannerTool.generate_plan(
             tasks=ranked_tasks,
             daily_hours=daily_hours,
-            start_date=date.today().isoformat(),
+            start_date=datetime.now(ZoneInfo(Config.TIMEZONE)).date().isoformat(),
             fixed_events=fixed_events,
         )
 

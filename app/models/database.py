@@ -1,8 +1,12 @@
+import logging
 import sqlite3
-import json
 from pathlib import Path
-from flask import g, has_app_context, current_app
+
+from flask import current_app, g, has_app_context
+
 from app.config import Config
+
+logger = logging.getLogger(__name__)
 
 SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS tasks (
@@ -146,17 +150,25 @@ class Database:
         conn = sqlite3.connect(db_path)
         conn.executescript(SCHEMA_SQL)
 
-        # Migration: ensure event_type column exists on schedules
+                # Migration: ensure event_type column exists on schedules
         try:
             cursor = conn.cursor()
             cursor.execute("PRAGMA table_info(schedules);")
             columns = [row[1] for row in cursor.fetchall()]
-            if "event_type" not in columns:
-                cursor.execute("ALTER TABLE schedules ADD COLUMN event_type TEXT DEFAULT 'TASK_STUDY';")
-                conn.commit()
-        except Exception:
-            pass
 
+            if "event_type" not in columns:
+                cursor.execute(
+                    "ALTER TABLE schedules "
+                    "ADD COLUMN event_type TEXT DEFAULT 'TASK_STUDY';"
+                )
+                conn.commit()
+
+        except sqlite3.Error:
+            logger.exception(
+                "Failed to migrate schedules table: "
+                "could not ensure event_type column exists."
+            )
+            raise
         conn.commit()
         conn.close()
 

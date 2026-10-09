@@ -1,9 +1,9 @@
-import pytest
-from app.tools.task_tool import TaskTool
-from app.tools.scheduler_tool import SchedulerTool
-from app.tools.research_tool import ResearchTool
-from app.tools.planner_tool import PlannerTool
 from app.tools.monitor_tool import MonitorTool
+from app.tools.planner_tool import PlannerTool
+from app.tools.research_tool import ResearchTool
+from app.tools.scheduler_tool import SchedulerTool
+from app.tools.task_tool import TaskTool
+
 
 def test_task_crud(test_app):
     with test_app.app_context():

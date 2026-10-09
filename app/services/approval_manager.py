@@ -1,7 +1,10 @@
 import json
 from datetime import datetime
+from zoneinfo import ZoneInfo
+
+from app.config import Config
 from app.models.database import Database
-from app.tools.tool_registry import registry
+
 
 class ApprovalManager:
     @staticmethod
@@ -55,7 +58,7 @@ class ApprovalManager:
         conn = Database.get_connection()
         try:
             cursor = conn.cursor()
-            now = datetime.now().isoformat()
+            now = datetime.now(ZoneInfo(Config.TIMEZONE)).isoformat()
             cursor.execute(
                 """
                 INSERT INTO approvals (run_id, proposed_actions_json, status, created_at)
@@ -108,7 +111,7 @@ class ApprovalManager:
         conn = Database.get_connection()
         try:
             cursor = conn.cursor()
-            now = datetime.now().isoformat()
+            now = datetime.now(ZoneInfo(Config.TIMEZONE)).isoformat()
             cursor.execute(
                 """
                 UPDATE approvals 

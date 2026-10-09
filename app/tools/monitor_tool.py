@@ -1,7 +1,11 @@
-from datetime import datetime, date
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+from app.config import Config
 from app.models.database import Database
-from app.tools.task_tool import TaskTool
 from app.tools.scheduler_tool import SchedulerTool
+from app.tools.task_tool import TaskTool
+
 
 class MonitorTool:
     @staticmethod
@@ -41,7 +45,7 @@ class MonitorTool:
     @staticmethod
     def detect_overdue_tasks():
         """Finds any tasks whose deadline is earlier than today and not yet completed."""
-        today = date.today().isoformat()
+        today = datetime.now(ZoneInfo(Config.TIMEZONE)).date().isoformat()
         conn = Database.get_connection()
         try:
             cursor = conn.cursor()
@@ -77,7 +81,7 @@ class MonitorTool:
         3. Workload capacity overflow on scheduled dates
         """
         conflicts = []
-        today = date.today().isoformat()
+        today = datetime.now(ZoneInfo(Config.TIMEZONE)).date().isoformat()
 
         # 1. Overdue tasks
         overdue = MonitorTool.detect_overdue_tasks()

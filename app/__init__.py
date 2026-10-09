@@ -1,10 +1,13 @@
-import os
+
+
 from flask import Flask, jsonify
+
+from app import tools  # noqa: F401
 from app.config import Config
 from app.models.database import Database, close_db
 from app.routes.api import api_bp
 from app.routes.web import web_bp
-import app.tools # Ensure all tools are registered in tool_registry
+
 
 def create_app(config_class=Config):
     app = Flask(__name__, static_folder="static", template_folder="templates")

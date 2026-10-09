@@ -1,6 +1,10 @@
 import json
 from datetime import datetime
+from zoneinfo import ZoneInfo
+
+from app.config import Config
 from app.models.database import Database
+
 
 class ToolRegistry:
     def __init__(self):
@@ -31,13 +35,13 @@ class ToolRegistry:
             result = func(**kwargs)
             self._log_call(run_id, tool_name, func_name, kwargs, result, "SUCCESS", db_conn)
             return {"success": True, "data": result}
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 — Tool failures become structured agent results.
             err_msg = str(e)
             self._log_call(run_id, tool_name, func_name, kwargs, {"error": err_msg}, "FAILED", db_conn)
             return {"success": False, "error": err_msg}
 
     def _log_call(self, run_id, tool_name, func_name, args, result, status, db_conn=None):
-        timestamp = datetime.now().isoformat()
+        timestamp = datetime.now(ZoneInfo(Config.TIMEZONE)).isoformat()
         conn = db_conn
         should_close = False
         try:
@@ -61,7 +65,7 @@ class ToolRegistry:
                 )
             )
             conn.commit()
-        except Exception as ex:
+        except Exception as ex:  # noqa: BLE001 — Audit logging must not crash tool execution.
             # Prevent logging failure from breaking app
             print(f"[ToolRegistry Log Error] {ex}")
         finally:

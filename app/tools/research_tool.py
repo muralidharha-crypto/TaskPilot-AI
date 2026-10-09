@@ -2,11 +2,12 @@ import json
 import re
 import urllib.parse
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import requests
 
+from app.config import Config
 from app.models.database import Database
-
 
 # Verified authoritative reference sources for foundational technology domains
 AUTHENTIC_KNOWLEDGE_BASE = {
@@ -333,14 +334,14 @@ class ResearchTool:
                 "source": {
                     "title": f"Wikipedia Article: {title}",
                     "authors": "Wikimedia Foundation Contributors",
-                    "year": str(datetime.now().year),
+                    "year": str(datetime.now(ZoneInfo(Config.TIMEZONE)).year),
                     "source_type": "Open Encyclopedia",
                     "url": page_url,
                     "snippet": extract[:280] + ("..." if len(extract) > 280 else ""),
                     "verification_status": "LIVE PAGE RETRIEVED"
                 }
             }
-        except Exception:
+        except Exception:  # noqa: BLE001 — Optional live research must fall back gracefully.
             return None
 
     @staticmethod
@@ -508,7 +509,7 @@ Return this exact structure:
             actionable_next_steps = result["action_items"] if isinstance(result["action_items"], list) else []
             ai_generated = True
 
-        except Exception as error:
+        except Exception as error:  # noqa: BLE001 — Gemini failures must activate the local fallback.
             gemini_error = str(error)
             error_text = gemini_error.lower()
 
@@ -610,7 +611,7 @@ Return this exact structure:
                         "Retry synthesis when Gemini quota or service availability is restored."
                     ]
 
-        now = datetime.now().isoformat()
+        now = datetime.now(ZoneInfo(Config.TIMEZONE)).isoformat()
         conn = Database.get_connection()
 
         try:
